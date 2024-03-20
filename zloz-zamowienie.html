@@ -45,7 +45,7 @@
 <body>
 
 <form id="orderForm">
-      <label for="product">Produkt, którym jesteś zainteresowany:</label>
+    <label for="product">Produkt, którym jesteś zainteresowany:</label>
     <input type="text" id="product" name="product" required>
   
     <label for="name">Imię i nazwisko:</label>
@@ -89,13 +89,32 @@
             jsonData[key] = value;
         });
 
+        // Przygotuj dane do wysłania w formie embed Discord
+        var embedData = {
+            "embeds": [{
+                "title": "Nowe zamówienie",
+                "description": "Złożono nowe zamówienie.",
+                "color": 16711680,
+                "fields": []
+            }]
+        };
+
+        // Dodaj pola z danymi formularza do embeda
+        for (const [key, value] of formData.entries()) {
+            embedData.embeds[0].fields.push({
+                "name": key,
+                "value": value,
+                "inline": true
+            });
+        }
+
         // Wyślij dane na webhook Discord
         fetch('https://discord.com/api/webhooks/1220054625416118383/H-xMLuzcmY5i0Yw_hQSGKwOubYVyLmI-UE6jFxF3_BMuQFSZgpTKXavQPa322deM0kl8', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(jsonData)
+            body: JSON.stringify(embedData)
         })
         .then(function(response) {
             if (response.ok) {
